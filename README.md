@@ -11,7 +11,7 @@
 
 ### Example:
 
-    `curl -X POST http://localhost:8080/user/batch --data "@payload.json" -H "Content-Type: application/json`
+    `curl -X POST http://localhost:8080/user/batch --data "@payload.json" -H "Content-Type: application/json"`
 
 payload.json content: 
 
@@ -19,7 +19,7 @@ payload.json content:
     {
       "timestamp": "2021-10-22T10:47:13.749627+07:00",
       "name": "bidRequest",
-      "requestId": "sample-id,
+      "requestId": "sample-id",
       "context": {
         "id": "6e3803cd726ef184e996-5",
         "imp": [
