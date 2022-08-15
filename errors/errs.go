@@ -7,3 +7,4 @@ func (e Error) Error() string {
 } 
 
 const ErrExceedBodySize = Error("exceed body size")
+const ErrUploading = Error("upload is failed")
