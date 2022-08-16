@@ -51,14 +51,19 @@ func (u UserControllerImpl) Upload(w http.ResponseWriter, r *http.Request) {
 	jsonBuffer := buffer[:counter]
 	var jsonBody map[string]interface{}
 
-	// write to tmp directory for preparing upload
-	fileDir := "/tmp/file"
-	err := u.fileWriter.WriteFile(fileDir, jsonBuffer)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
+	ch := make(chan error)
+	go func() {
+		fileDir := "/tmp/file"
+		err := u.fileWriter.WriteFile(fileDir, jsonBuffer)
+		if err != nil {
+			ch <- err
+		}
 
-	err = u.aws.UploadFile(fileDir)
+		err = u.aws.UploadFile(fileDir)
+		ch <- err
+	}()
+
+	err := <-ch
 	if err != nil {
 		http.Error(w, errs.ErrUploading.Error(), http.StatusBadRequest)
 	}
@@ -72,4 +77,5 @@ func (u UserControllerImpl) Upload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(jsonBody)
+
 }
