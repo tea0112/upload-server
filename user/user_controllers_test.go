@@ -47,3 +47,24 @@ func TestUpload(t *testing.T) {
 		}
 	})
 }
+
+func BenchmarkUpload(b *testing.B) {
+	dirname, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Open(path.Join(dirname, "../payload.json"))
+	if err != nil {
+		panic(err)
+	}
+
+	r := httptest.NewRequest(http.MethodPost, "/", bufio.NewReader(f))
+	w := httptest.NewRecorder()
+
+	userController := UserControllerImpl{fileWriter: WritingSuccessfulMock{}, aws: AwsSuccessfulUploadingMock{}}
+
+	for i := 0; i < b.N; i++ {
+		userController.Upload(w, r)
+	}
+}
